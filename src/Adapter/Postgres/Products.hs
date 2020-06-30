@@ -37,7 +37,7 @@ instance ToRow ProductRow where
 findById' :: Pool Connection -> Text -> IO (Maybe P.Product)
 findById' pool' id' = do
     let q = "SELECT * FROM products WHERE id = ?"
-    r <-  withResource pool' (\conn' -> query conn' q [id' :: Text] :: IO [ProductRow])
+    r <-  withResource pool' (\conn' -> query conn' q [id'] :: IO [ProductRow])
     let p = case r of
           (h: t) -> Just (toDomain h)
           []     -> Nothing
@@ -50,19 +50,19 @@ create' :: Pool Connection -> P.Product -> IO ()
 create' pool' p' = do
     let i = "INSERT INTo products(id, name, stock) VALUES (?, ?, ?)"
     let row = fromDomain p'
-    r <- withResource pool' (\conn' -> execute conn' i (_id row :: Text, _name row :: Text, _stock row :: Double))
+    r <- withResource pool' (\conn' -> execute conn' i (_id row , _name row, _stock row))
     return ()
-     
+
 toDomain :: ProductRow -> P.Product
-toDomain row = 
+toDomain row =
   P.Product {
     P.productId = P.ProductId (_id row),
     P.productName = P.ProductName (_name row),
     P.productStock = P.ProductStock (_stock row)
   }
-                
+
 fromDomain :: P.Product -> ProductRow
-fromDomain p = 
+fromDomain p =
   ProductRow {
     _id = P.id (P.productId p),
     _name = P.name (P.productName p),
