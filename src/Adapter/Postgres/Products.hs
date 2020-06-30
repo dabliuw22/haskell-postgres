@@ -36,21 +36,20 @@ instance ToRow ProductRow where
 
 findById' :: Pool Connection -> Text -> IO (Maybe P.Product)
 findById' pool' id' = do
-    let q = "SELECT * FROM products WHERE id = ?"
-    r <-  withResource pool' (\conn' -> query conn' q [id'] :: IO [ProductRow])
-    let p = case r of
-          (h: t) -> Just (toDomain h)
-          []     -> Nothing
-    return p
+    let sql = "SELECT * FROM products WHERE id = ?"
+    result <-  withResource pool' (\conn' -> query conn' sql [id'] :: IO [ProductRow])
+    return $ case result of
+             (h: _) -> Just (toDomain h)
+             _      -> Nothing
 
 findAll' :: Pool Connection -> IO [P.Product]
 findAll' pool' = fmap (map toDomain) (withResource pool' (`query_` "SELECT * FROM products"))
 
 create' :: Pool Connection -> P.Product -> IO ()
 create' pool' p' = do
-    let i = "INSERT INTo products(id, name, stock) VALUES (?, ?, ?)"
+    let sql = "INSERT INTo products(id, name, stock) VALUES (?, ?, ?)"
     let row = fromDomain p'
-    r <- withResource pool' (\conn' -> execute conn' i (_id row , _name row, _stock row))
+    result <- withResource pool' (\conn' -> execute conn' sql (_id row , _name row, _stock row))
     return ()
 
 toDomain :: ProductRow -> P.Product
