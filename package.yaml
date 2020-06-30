@@ -1,0 +1,59 @@
+name:                haskell-postgres
+version:             0.1.0.0
+github:              "dabliuw22/haskell-postgres"
+license:             BSD3
+author:              "Will Leyton"
+maintainer:          "wleylop22@gmail.com"
+copyright:           "2020 Will Leyton"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/dabliuw22/haskell-postgres#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- hspec
+- mtl
+- text
+- async
+- uuid
+- postgresql-simple
+- resource-pool
+- time
+
+library:
+  source-dirs: src
+
+executables:
+  haskell-postgres-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-postgres
+    - text
+
+tests:
+  haskell-postgres-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-postgres
+    - hspec
+    - text
