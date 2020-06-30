@@ -13,7 +13,7 @@ data Configuration =
     user :: String,
     pass :: String,
     database :: String
-   }
+   } deriving Eq
 
 --pool :: Configuration -> (Pool PG.Connection -> IO a) -> IO a
 --pool conf = bracket initPool cleanPool where
@@ -24,7 +24,6 @@ create conf = createPool (connection conf) close 1 10 15
 
 destroy :: Pool PG.Connection -> IO ()
 destroy pool = destroyAllResources pool
-
 
 connection :: Configuration -> IO PG.Connection
 connection conf = PG.connect PG.ConnectInfo {
