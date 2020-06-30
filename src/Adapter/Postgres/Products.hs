@@ -18,7 +18,7 @@ data ProductRow =
     _stock :: Double
   }
 
-class Functor m => ProductRepository m where
+class (Functor m, Monad m) => ProductRepository m where
   findById :: Pool Connection -> Text -> m (Maybe P.Product)
   findAll :: Pool Connection -> m [P.Product]
   create :: Pool Connection -> P.Product -> m ()

@@ -15,7 +15,7 @@ conf = DB.Configuration {
 }
 
 newProduct = P.Product {
-  P.productId = P.ProductId { P.id = "450e8400-e29b-41d4-a716-446655440000" },
+  P.productId = P.ProductId { P.id = "950e8400-e29b-41d4-a716-446655440000" },
   P.productName = P.ProductName { P.name = "NewProduct" },
   P.productStock = P.ProductStock { P.stock = 20.0 }
 }
