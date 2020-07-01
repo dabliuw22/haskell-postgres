@@ -2,7 +2,7 @@
 {-# LANGUAGE BlockArguments #-}
 module Adapter.Postgres.Products (ProductRepository(..)) where
 
-import Control.Exception
+import Control.Monad.Except
 import Data.Text (Text)
 import Data.Pool
 import Database.PostgreSQL.Simple
@@ -24,8 +24,8 @@ class (Functor m, Monad m) => ProductRepository m where
   create :: Pool Connection -> P.Product -> m ()
 
 instance ProductRepository IO where
-  findById pool id = findById' pool id
-  findAll pool = findAll' pool
+  findById pool id = findById' pool id `catchError` (\e -> pure Nothing)
+  findAll pool = findAll' pool `catchError` (\e -> pure [])
   create pool product = create' pool product
 
 instance FromRow ProductRow where

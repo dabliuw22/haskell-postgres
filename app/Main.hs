@@ -23,7 +23,7 @@ newProduct = P.Product {
 main :: IO ()
 main = do
   pool <- DB.create conf
-  new <- create pool newProduct
+  --new <- create pool newProduct
   all <- findAll pool
   print all
   one <- findById pool "d91ae396-42e7-4483-a3ef-e729c486980f"
