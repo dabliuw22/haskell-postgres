@@ -3,7 +3,7 @@ module Main where
 
 import qualified Adapter.Postgres.Config.PostgresConfig as DB
 import Adapter.Postgres.Products
-import Data.Maybe
+import Data.Maybe (fromJust, fromMaybe)
 import Data.Text (Text, pack)
 import Data.UUID.V1 (nextUUID)
 import qualified Data.UUID as UUID
@@ -15,7 +15,7 @@ main = do
   conf <- load
   pool <- DB.create conf
   newProduct <- new
-  insert <- create pool newProduct
+  -- insert <- create pool newProduct
   all <- findAll pool
   print all
   one <- findById pool "d91ae396-42e7-4483-a3ef-e729c486980f"
@@ -42,7 +42,7 @@ new = do
   uuid <- nextUUID
   let id' = fromJust uuid
   return P.Product {
-  P.productId = P.ProductId { P.id = pack (UUID.toString id') },
-  P.productName = P.ProductName { P.name = "NewProduct" },
-  P.productStock = P.ProductStock { P.stock = 100.0 }
-}
+    P.productId = P.ProductId { P.id = pack (UUID.toString id') },
+    P.productName = P.ProductName { P.name = "NewProduct" },
+    P.productStock = P.ProductStock { P.stock = 100.0 }
+  }
