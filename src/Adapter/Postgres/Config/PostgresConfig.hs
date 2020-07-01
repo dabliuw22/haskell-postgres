@@ -9,7 +9,7 @@ import GHC.Word
 data Configuration =
    Configuration {
     host :: String,
-    port :: Word16,
+    port :: Integer,
     user :: String,
     pass :: String,
     database :: String
@@ -28,7 +28,7 @@ destroy pool = destroyAllResources pool
 connection :: Configuration -> IO PG.Connection
 connection conf = PG.connect PG.ConnectInfo {
   PG.connectHost = host conf,
-  PG.connectPort = port conf,
+  PG.connectPort = fromIntegral (port conf),
   PG.connectUser = user conf,
   PG.connectPassword = pass conf,
   PG.connectDatabase = database conf
