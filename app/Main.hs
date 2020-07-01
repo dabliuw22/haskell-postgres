@@ -3,11 +3,25 @@ module Main where
 
 import qualified Adapter.Postgres.Config.PostgresConfig as DB
 import Adapter.Postgres.Products
-import Data.Text (Text)
 import Data.Maybe
+import Data.Text (Text, pack)
+import Data.UUID.V1 (nextUUID)
+import qualified Data.UUID as UUID
 import qualified Domain.Products as P
 import System.Environment
 
+main :: IO ()
+main = do
+  conf <- load
+  pool <- DB.create conf
+  newProduct <- new
+  insert <- create pool newProduct
+  all <- findAll pool
+  print all
+  one <- findById pool "d91ae396-42e7-4483-a3ef-e729c486980f"
+  print one
+  DB.destroy pool
+  
 load :: IO DB.Configuration
 load = do
   host' <- lookupEnv "DB_HOST"
@@ -23,19 +37,12 @@ load = do
            DB.database = fromMaybe "haskell_db" name'
          }
 
-newProduct = P.Product {
-  P.productId = P.ProductId { P.id = "750e8400-e29b-41d4-a716-446655440000" },
+new :: IO P.Product
+new = do
+  uuid <- nextUUID
+  let id' = fromJust uuid
+  return P.Product {
+  P.productId = P.ProductId { P.id = pack (UUID.toString id') },
   P.productName = P.ProductName { P.name = "NewProduct" },
-  P.productStock = P.ProductStock { P.stock = 20.0 }
+  P.productStock = P.ProductStock { P.stock = 100.0 }
 }
-
-main :: IO ()
-main = do
-  conf <- load
-  pool <- DB.create conf
-  --new <- create pool newProduct
-  all <- findAll pool
-  print all
-  one <- findById pool "d91ae396-42e7-4483-a3ef-e729c486980f"
-  print one
-  DB.destroy pool
