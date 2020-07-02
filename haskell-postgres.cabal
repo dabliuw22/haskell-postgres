@@ -30,6 +30,7 @@ library
       Adapter.Postgres.Config.PostgresConfig
       Adapter.Postgres.Migration.PostgresMigration
       Adapter.Postgres.Products
+      Application.Products
       Domain.Products
   other-modules:
       Paths_haskell_postgres

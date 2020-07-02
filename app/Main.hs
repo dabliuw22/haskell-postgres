@@ -3,7 +3,8 @@ module Main where
 
 import qualified Adapter.Postgres.Config.PostgresConfig as DB
 import Adapter.Postgres.Migration.PostgresMigration
-import Adapter.Postgres.Products
+import qualified Adapter.Postgres.Products as ADA
+import qualified Application.Products as APP
 import Control.Monad.IO.Class
 import Data.Maybe (fromJust, fromMaybe)
 import Data.Text (Text, pack)
@@ -20,10 +21,10 @@ main = do
   pool <- DB.create conf
   migration <- migrate pool dir
   newProduct <- new
-  insert <- create pool newProduct
-  all <- findAll pool
+  insert <- APP.create' (ADA.create pool) newProduct
+  all <- APP.findAll' (ADA.findAll pool)
   print all
-  one <- findById pool "038b7106-bc8d-11ea-8001-3af9d3b254d0"
+  one <- APP.findById' (ADA.findById pool) "038b7106-bc8d-11ea-8001-3af9d3b254d0"
   print one
   DB.destroy pool
 
