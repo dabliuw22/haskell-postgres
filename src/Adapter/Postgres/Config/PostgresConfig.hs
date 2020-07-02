@@ -1,7 +1,6 @@
 module Adapter.Postgres.Config.PostgresConfig (Configuration(..), create, destroy) where
 
 import qualified Database.PostgreSQL.Simple as PG
-import Database.PostgreSQL.Simple.Time
 import Control.Exception
 import Data.Pool
 import GHC.Word

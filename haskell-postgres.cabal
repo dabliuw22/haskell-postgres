@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Adapter.Postgres.Config.PostgresConfig
+      Adapter.Postgres.Migration.PostgresMigration
       Adapter.Postgres.Products
       Domain.Products
   other-modules:
@@ -40,6 +41,7 @@ library
     , hspec
     , mtl
     , postgresql-simple
+    , postgresql-simple-migration
     , resource-pool
     , text
     , uuid

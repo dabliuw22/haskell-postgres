@@ -29,6 +29,7 @@ dependencies:
 - postgresql-simple
 - resource-pool
 - time
+- postgresql-simple-migration
 
 library:
   source-dirs: src
