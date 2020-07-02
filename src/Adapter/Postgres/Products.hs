@@ -3,6 +3,7 @@
 module Adapter.Postgres.Products (ProductRepository(..)) where
 
 import Control.Monad.Except
+import Control.Monad.IO.Class
 import Data.Text (Text)
 import Data.Pool
 import Database.PostgreSQL.Simple
@@ -34,22 +35,22 @@ instance FromRow ProductRow where
 instance ToRow ProductRow where
   toRow p = [toField (_id p), toField (_name p), toField (_stock p)]
 
-findById' :: Pool Connection -> Text -> IO (Maybe P.Product)
+findById' :: MonadIO m => Pool Connection -> Text -> m (Maybe P.Product)
 findById' pool' id' = do
     let sql = "SELECT * FROM products WHERE id = ?"
-    result <-  withResource pool' (\conn' -> query conn' sql [id'] :: IO [ProductRow])
+    result <- liftIO $ withResource pool' (\conn' -> query conn' sql [id'])
     return $ case result of
              (h: _) -> Just (toDomain h)
              _      -> Nothing
 
-findAll' :: Pool Connection -> IO [P.Product]
-findAll' pool' = fmap (map toDomain) (withResource pool' (`query_` "SELECT * FROM products"))
+findAll' :: MonadIO m => Pool Connection -> m [P.Product]
+findAll' pool' = liftIO $ fmap (map toDomain) (withResource pool' (`query_` "SELECT * FROM products"))
 
-create' :: Pool Connection -> P.Product -> IO ()
+create' :: MonadIO m => Pool Connection -> P.Product -> m ()
 create' pool' p' = do
     let sql = "INSERT INTo products(id, name, stock) VALUES (?, ?, ?)"
     let row = fromDomain p'
-    result <- withResource pool' (\conn' -> execute conn' sql (_id row , _name row, _stock row))
+    result <- liftIO $ withResource pool' (\conn' -> execute conn' sql (_id row , _name row, _stock row))
     return ()
 
 toDomain :: ProductRow -> P.Product

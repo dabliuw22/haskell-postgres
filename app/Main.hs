@@ -4,6 +4,7 @@ module Main where
 import qualified Adapter.Postgres.Config.PostgresConfig as DB
 import Adapter.Postgres.Migration.PostgresMigration
 import Adapter.Postgres.Products
+import Control.Monad.IO.Class
 import Data.Maybe (fromJust, fromMaybe)
 import Data.Text (Text, pack)
 import Data.UUID.V1 (nextUUID)
@@ -22,17 +23,17 @@ main = do
   insert <- create pool newProduct
   all <- findAll pool
   print all
-  one <- findById pool "d91ae396-42e7-4483-a3ef-e729c486980f"
+  one <- findById pool "038b7106-bc8d-11ea-8001-3af9d3b254d0"
   print one
   DB.destroy pool
 
-load :: IO DB.Configuration
+load :: MonadIO m => m DB.Configuration
 load = do
-  host' <- lookupEnv "DB_HOST"
-  port' <- lookupEnv "DB_PORT"
-  user' <- lookupEnv "DB_USER"
-  pass' <- lookupEnv "DB_PASS"
-  name' <- lookupEnv "DB_NAME"
+  host' <- liftIO $ lookupEnv "DB_HOST"
+  port' <- liftIO $ lookupEnv "DB_PORT"
+  user' <- liftIO $ lookupEnv "DB_USER"
+  pass' <- liftIO $ lookupEnv "DB_PASS"
+  name' <- liftIO $ lookupEnv "DB_NAME"
   return DB.Configuration {
            DB.host = fromMaybe "localhost" host',
            DB.port = read (fromMaybe "5432" port') :: Integer,
@@ -41,9 +42,9 @@ load = do
            DB.database = fromMaybe "haskell_db" name'
          }
 
-new :: IO P.Product
+new :: MonadIO m => m P.Product
 new = do
-  uuid <- nextUUID
+  uuid <- liftIO nextUUID
   let uuid' = pack (UUID.toString (fromJust uuid))
   return P.Product {
     P.productId = P.ProductId { P.id = uuid' },
