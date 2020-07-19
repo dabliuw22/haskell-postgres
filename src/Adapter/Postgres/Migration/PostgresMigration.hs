@@ -12,4 +12,4 @@ migrate pool dir = do
     M.MigrationError e -> return ()
     _                  -> return () -- MigrationSuccess
   where
-    commands = [M.MigrationInitialization, M.MigrationValidation (M.MigrationDirectory dir)]
+    commands = [M.MigrationInitialization, M.MigrationDirectory dir]
